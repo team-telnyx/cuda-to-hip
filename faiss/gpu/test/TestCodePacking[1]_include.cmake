@@ -1,0 +1,5 @@
+if(EXISTS "/home/hadi.sharifi/ws/faiss/faiss/gpu/test/TestCodePacking[1]_tests.cmake")
+  include("/home/hadi.sharifi/ws/faiss/faiss/gpu/test/TestCodePacking[1]_tests.cmake")
+else()
+  add_test(TestCodePacking_NOT_BUILT TestCodePacking_NOT_BUILT)
+endif()
