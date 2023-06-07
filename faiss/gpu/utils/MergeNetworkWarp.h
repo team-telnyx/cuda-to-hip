@@ -93,7 +93,9 @@ template <
         bool IsBitonic>
 inline __device__ void warpBitonicMergeLE16(K& k, V& v) {
     static_assert(utils::isPowerOf2(L), "L must be a power-of-2");
+    // TODO: HADI warp
     static_assert(L <= kWarpSize / 2, "merge list size must be <= 16");
+    // static_assert(L <= kWarpSize / 4, "merge list size must be <= 16");
 
     int laneId = getLaneId();
 
@@ -530,8 +532,8 @@ struct BitonicSortStep<K, V, 1, Dir, Comp> {
         // Update this code if this changes
         // should go from 1 -> kWarpSize in multiples of 2
         // TODO: HADI warp
-        // static_assert(kWarpSize == 32, "unexpected warp size");
-        static_assert(kWarpSize == 64, "unexpected warp size");
+        static_assert(kWarpSize == 32, "unexpected warp size");
+        // static_assert(kWarpSize == 64, "unexpected warp size");
 
         warpBitonicMergeLE16<K, V, 1, Dir, Comp, false>(k[0], v[0]);
         warpBitonicMergeLE16<K, V, 2, Dir, Comp, false>(k[0], v[0]);

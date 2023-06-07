@@ -18,9 +18,9 @@ namespace gpu {
 // #endif
 
 // We validate this against the actual architecture in device initialization
-// TODO: HADI
-// constexpr int kWarpSize = 32;
-constexpr int kWarpSize = 64;
+// TODO: HADI warp
+constexpr int kWarpSize = 32;
+// constexpr int kWarpSize = 64;
 
 // This is a memory barrier for intra-warp writes to shared memory.
 __inline__ __device__ void warpFence() {
