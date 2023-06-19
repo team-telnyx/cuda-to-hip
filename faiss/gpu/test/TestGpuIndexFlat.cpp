@@ -97,7 +97,7 @@ void testFlat(const TestFlatOptions& opt) {
     faiss::gpu::compareIndices(
             cpuIndex,
             // TODO: HADI
-            // gupIndex,
+            // gpuIndex,
             cpuTempIndex,
             numQuery,
             dim,
@@ -108,7 +108,7 @@ void testFlat(const TestFlatOptions& opt) {
             // useless when math (the accumulator) is
             // in fp16. Figure out another way to test
             opt.useFloat16 ? 0.99f : 0.1f,
-            opt.useFloat16 ? 0.65f : 0.015f); /**/
+            opt.useFloat16 ? 0.65f : 0.015f); 
 }
 
 TEST(TestGpuIndexFlat, IP_Float32) {
@@ -340,7 +340,7 @@ TEST(TestGpuIndexFlat, CopyTo) {
         EXPECT_EQ(gpuVals, cpuVals);
     }
 }
-/*
+
 TEST(TestGpuIndexFlat, UnifiedMemory) {
     // Construct on a random device to test multi-device, if we have
     // multiple devices
@@ -436,7 +436,7 @@ TEST(TestGpuIndexFlat, LargeIndex) {
             0.1f,
             0.015f);
 }
-*/
+
 
 TEST(TestGpuIndexFlat, Residual) {
     // Construct on a random device to test multi-device, if we have

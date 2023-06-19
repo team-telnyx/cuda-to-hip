@@ -47,17 +47,7 @@ __device__ __forceinline__ unsigned int setBitfield(
     return ret;
 }
 
-__device__ __inline__ int getLaneId() {
-    unsigned int laneID;
-    asm volatile(
-        "s_mov_b32 s0, m0\n"
-        "s_and_b32 %0, s0, 0x3F"
-        : "=r" (laneID)
-        :
-        : "s0"
-    );
-    return laneID;
-}
+
 
 __device__ __forceinline__ unsigned getLaneMaskLt() {
     unsigned mask;

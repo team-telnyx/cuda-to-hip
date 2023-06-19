@@ -175,7 +175,7 @@ struct BlockSelect {
             threadV[i] = initV;
         }
 
-        int laneId = getLaneId();
+        int laneId = hipThreadIdx_x % kWarpSize;
         int warpId = hipThreadIdx_x / kWarpSize;
         warpK = sharedK + warpId * kTotalWarpSortSize;
         warpV = sharedV + warpId * kTotalWarpSortSize;
@@ -246,12 +246,12 @@ struct BlockSelect {
     /// per-thread queues with the warp-wide queue, creating a sorted
     /// list across both
     __device__ inline void mergeWarpQ() {
-        int laneId = getLaneId();
+        int laneId = hipThreadIdx_x % kWarpSize;
 
         // Sort all of the per-thread queues
         warpSortAnyRegisters<K, V, NumThreadQ, !Dir, Comp>(threadK, threadV);
 
-        constexpr int kNumWarpQRegisters = NumWarpQ / kWarpSize;
+        constexpr int kNumWarpQRegisters = NumWarpQ * 2/ kWarpSize;
         K warpKRegisters[kNumWarpQRegisters];
         V warpVRegisters[kNumWarpQRegisters];
 
@@ -381,7 +381,7 @@ struct BlockSelect<K, V, Dir, Comp, 1, NumThreadQ, ThreadsPerBlock> {
         }
 
         // Each warp writes out a single value
-        int laneId = getLaneId();
+        int laneId = hipThreadIdx_x % kWarpSize;
         int warpId = hipThreadIdx_x / kWarpSize;
 
         if (laneId == 0) {
@@ -442,7 +442,7 @@ template <
         int NumThreadQ,
         int ThreadsPerBlock>
 struct WarpSelect {
-    static constexpr int kNumWarpQRegisters = NumWarpQ / kWarpSize;
+    static constexpr int kNumWarpQRegisters = NumWarpQ * 2 / kWarpSize;
 
     __device__ inline WarpSelect(K initKVal, V initVVal, int k)
             : initK(initKVal),
@@ -486,38 +486,31 @@ struct WarpSelect {
         }
     }
 
-    __device__ inline void checkThreadQ() {
-        bool needSort = (numVals == NumThreadQ);
+__device__ inline void checkThreadQ() {
+    bool needSort = (numVals == NumThreadQ);
 
-// TODO: HADI
-// #if HIP_VERSION_MAJOR >= 4
-//     int oldSort = needSort;
-//     needSort = atomicCAS(&needSort, oldSort, oldSort | 1);
-// #else
     needSort = __any(needSort);
-// #endif
 
-
-        if (!needSort) {
-            // no lanes have triggered a sort
-            return;
-        }
-
-        mergeWarpQ();
-
-        // Any top-k elements have been merged into the warp queue; we're
-        // free to reset the thread queues
-        numVals = 0;
-
-#pragma unroll
-        for (int i = 0; i < NumThreadQ; ++i) {
-            threadK[i] = initK;
-            threadV[i] = initV;
-        }
-
-        // We have to beat at least this element
-        warpKTop = shfl(warpK[kNumWarpQRegisters - 1], kLane);
+    if (!needSort) {
+        // no lanes have triggered a sort
+        return;
     }
+
+    mergeWarpQ();
+
+    // Any top-k elements have been merged into the warp queue; we're
+    // free to reset the thread queues
+    numVals = 0;
+
+    #pragma unroll
+    for (int i = 0; i < NumThreadQ; ++i) {
+        threadK[i] = initK;
+        threadV[i] = initV;
+    }
+
+    // We have to beat at least this element
+    warpKTop = __shfl(warpK[kNumWarpQRegisters - 1], kLane, kWarpSize);
+}
 
     /// This function handles sorting and merging together the
     /// per-thread queues with the warp-wide queue, creating a sorted
@@ -554,7 +547,7 @@ struct WarpSelect {
 
     /// Dump final k selected values for this warp out
     __device__ inline void writeOut(K* outK, V* outV, int k) {
-        int laneId = getLaneId();
+        int laneId = hipThreadIdx_x % kWarpSize;
 
 #pragma unroll
         for (int i = 0; i < kNumWarpQRegisters; ++i) {
@@ -607,11 +600,11 @@ struct WarpSelect<K, V, Dir, Comp, 1, NumThreadQ, ThreadsPerBlock> {
     __device__ inline WarpSelect(K initK, V initV, int k)
             : threadK(initK), threadV(initV) {}
 
-    __device__ inline void addThreadQ(K k, V v) {
-        bool swap = Dir ? Comp::gt(k, threadK) : Comp::lt(k, threadK);
-        threadK = swap ? k : threadK;
-        threadV = swap ? v : threadV;
-    }
+__device__ inline void addThreadQ(K k, V v) {
+    bool swap = Dir ? Comp::gt(k, threadK) : Comp::lt(k, threadK);
+    threadK = swap ? k : threadK;
+    threadV = swap ? v : threadV;
+}
 
     __device__ inline void checkThreadQ() {
         // We don't need to do anything here, since the warp doesn't
@@ -640,7 +633,8 @@ struct WarpSelect<K, V, Dir, Comp, 1, NumThreadQ, ThreadsPerBlock> {
 
     /// Dump final k selected values for this warp out
     __device__ inline void writeOut(K* outK, V* outV, int k) {
-        if (getLaneId() == 0) {
+        int laneId = hipThreadIdx_x % kWarpSize;
+        if (laneId == 0) {
             *outK = threadK;
             *outV = threadV;
         }

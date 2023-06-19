@@ -578,6 +578,7 @@ inline bool isSpecializedPQCodeDistanceDims(int dims) {
         case 24:
         case 28:
         case 32:
+        case 64:
             return true;
         default:
             return false;
@@ -655,8 +656,8 @@ void runPQCodeDistances(
         } else {                                                         \
             auto outCodeDistancesT = outCodeDistances.toTensor<float>(); \
                                                                          \
-            hipLaunchKernelGGL(HIP_KERNEL_NAME(pqCodeDistances<float, CentroidT, DIMS, L2>), \
-                            grid, block, smem, stream,                   \
+            hipLaunchKernelGGL(HIP_KERNEL_NAME(pqCodeDistances<float, CentroidT, DIMS, L2>),  \
+                            dim3(grid), dim3(block), smem, stream,                   \
                             queries,                                     \
                             kQueriesPerBlock,                            \
                             coarseCentroids,                             \

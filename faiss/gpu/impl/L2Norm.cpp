@@ -45,7 +45,7 @@ __global__ void l2NormRowMajor(
 
     // these are fine to be int (just based on block dimensions)
     int numWarps = utils::divUp(hipBlockDim_x, kWarpSize);
-    int laneId = getLaneId();
+    int laneId = hipThreadIdx_x % kWarpSize;
     int warpId = hipThreadIdx_x / kWarpSize;
 
     bool lastRowTile = (hipBlockIdx_x == (hipGridDim_x - 1));

@@ -312,8 +312,6 @@ void runBinaryDistance(
                 vecs, query, outK, outV, k, stream);
     } else {
         // Arbitrary size kernel
-        // TODO: HADI
-        std::cout << "runBinaryDistanceAnySize" << std::endl;
         runBinaryDistanceAnySize<unsigned char>(
                 vecs, query, outK, outV, k, stream);
     }

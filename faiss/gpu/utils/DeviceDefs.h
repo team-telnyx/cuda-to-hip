@@ -18,18 +18,16 @@ namespace gpu {
 // #endif
 
 // We validate this against the actual architecture in device initialization
-// TODO: HADI warp
-constexpr int kWarpSize = 32;
-// constexpr int kWarpSize = 64;
+constexpr int kWarpSize = 64;
 
 // This is a memory barrier for intra-warp writes to shared memory.
 __inline__ __device__ void warpFence() {
-#if defined(__HIP_DEVICE_COMPILE__)
+// #if defined(__HIP_DEVICE_COMPILE__)
     __syncthreads();
-#else
+// #else
     // For the time being, assume synchronicity.
     //  __threadfence_block();
-#endif
+// #endif
 }
 
 #if defined(__HIP_PLATFORM_NVCC__) && (__CUDA_ARCH__ > 9000)
@@ -38,6 +36,7 @@ __inline__ __device__ void warpFence() {
 // enable the 2048 selection code if we are above 9.0 (9.2 seems to be ok)
 #define GPU_MAX_SELECTION_K 2048
 #else
+// TODO: HADI warp 1024 > 2048
 #define GPU_MAX_SELECTION_K 1024
 #endif
 
