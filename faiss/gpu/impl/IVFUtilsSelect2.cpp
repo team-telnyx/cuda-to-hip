@@ -173,7 +173,7 @@ void runPass2SelectLists(
 #define RUN_PASS(INDEX_T, BLOCK, NUM_WARP_Q, NUM_THREAD_Q, DIR)         \
     do {                                                                \
         hipLaunchKernelGGL(HIP_KERNEL_NAME(pass2SelectLists<INDEX_T, BLOCK, NUM_WARP_Q, NUM_THREAD_Q, DIR>), \
-                        grid, dim3(BLOCK), 0, stream,                   \
+                        dim3(grid), dim3(BLOCK), 0, stream,                   \
                         heapDistances,                                  \
                         heapIndices,                                    \
                         listIndices.data(),                             \

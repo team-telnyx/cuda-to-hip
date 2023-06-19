@@ -149,16 +149,11 @@ void addTest(faiss::MetricType metricType, bool useFloat16CoarseQuantizer) {
         cpuIndex.add(opt.numAdd, addVecs.data());
         gpuIndex.add(opt.numAdd, addVecs.data());
 
-        // TODO: HADI for test, later delete cpuTempIndex
-        faiss::IndexIVFFlat cpuTempIndex(quantizer, opt.dim, opt.numCentroids, metricType);
-        gpuIndex.copyTo(&cpuTempIndex);
 
         bool compFloat16 = useFloat16CoarseQuantizer;
         faiss::gpu::compareIndices(
                 cpuIndex,
-                // TODO: HADI
-                // gpuIndex,
-                cpuTempIndex,
+                gpuIndex,
                 opt.numQuery,
                 opt.dim,
                 opt.k,
