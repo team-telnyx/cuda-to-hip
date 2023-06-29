@@ -112,38 +112,23 @@ inline void fromDevice(T* src, T* dst, size_t num, hipStream_t stream) {
     // in which case no copy is needed
     
     if (src == dst) {
-    // TODO: HADI 
-// printf("Here am I CopyUtils src == dst .........\n");
         return;
     }
 
     int dev = getDeviceForAddress(dst);
 
     if (dev == -1) {
-    // TODO: HADI 
-// printf("Here am I CopyUtils before dev == -1 .........\n");
-        // HIP_VERIFY(hipMemcpyAsync(
-        //         dst, src, num * sizeof(T), hipMemcpyDeviceToHost, stream));
-
-        hipMemcpyAsync(
-                dst, src, num * sizeof(T), hipMemcpyDeviceToHost, stream);
-    // TODO: HADI 
-// printf("Here am I CopyUtils after  dev == -1 .........\n");
+         HIP_VERIFY(hipMemcpyAsync(
+                 dst, src, num * sizeof(T), hipMemcpyDeviceToHost, stream));
     } else {
-    // TODO: HADI 
-// printf("Here am I CopyUtils before dev != -1.........\n");
         HIP_VERIFY(hipMemcpyAsync(
                 dst, src, num * sizeof(T), hipMemcpyDeviceToDevice, stream));
-    // TODO: HADI 
-// printf("Here am I CopyUtils after dev != -1.........\n");
     }
 }
 
 /// Copies a device array's allocation to an address, if necessary
 template <typename T, int Dim>
 void fromDevice(Tensor<T, Dim, true>& src, T* dst, hipStream_t stream) {
-    // TODO: HADI 
-// printf("Here am I CopyUtils In fromDevice() 2.........\n");
     FAISS_ASSERT(src.isContiguous());
     fromDevice(src.data(), dst, src.numElements(), stream);
 }

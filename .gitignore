@@ -18,7 +18,6 @@
 /tests/gtest/
 faiss/python/swigfaiss_avx2.swig
 /build
-/build000
 /compileScript
 /_deps
 /benchs

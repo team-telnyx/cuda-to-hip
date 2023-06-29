@@ -178,8 +178,6 @@ void GpuIndexBinaryFlat::search(
         size_t dataSize = n * (this->d / 8) * sizeof(uint8_t);
 
         if (dataSize >= kMinPageSize) {
-            // TODO: HADI
-        std::cout << "Inside Paging section..." << std::endl;
             searchFromCpuPaged_(
                     n, x, k, outDistances.data(), outIndices.data());
             usePaged = true;
@@ -187,8 +185,6 @@ void GpuIndexBinaryFlat::search(
     }
 
     if (!usePaged) {
-        // TODO: HADI
-        std::cout << "Outside Paging section..." << std::endl;
         searchNonPaged_(n, x, k, outDistances.data(), outIndices.data());
     }
 

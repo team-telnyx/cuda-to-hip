@@ -25,7 +25,7 @@
             bool dir,                                                          \
             int k,                                                             \
             hipStream_t stream) {                                             \
-        constexpr int kWarpSelectNumThreads = 128;                             \
+        constexpr int kWarpSelectNumThreads = 128 * 2;                             \
         auto grid = dim3(utils::divUp(                                         \
                 in.getSize(0), (kWarpSelectNumThreads / kWarpSize)));          \
         auto block = dim3(kWarpSelectNumThreads);                              \

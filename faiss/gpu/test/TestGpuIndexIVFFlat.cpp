@@ -149,16 +149,11 @@ void addTest(faiss::MetricType metricType, bool useFloat16CoarseQuantizer) {
         cpuIndex.add(opt.numAdd, addVecs.data());
         gpuIndex.add(opt.numAdd, addVecs.data());
 
-        // TODO: HADI for test, later delete cpuTempIndex
-        faiss::IndexIVFFlat cpuTempIndex(quantizer, opt.dim, opt.numCentroids, metricType);
-        gpuIndex.copyTo(&cpuTempIndex);
 
         bool compFloat16 = useFloat16CoarseQuantizer;
         faiss::gpu::compareIndices(
                 cpuIndex,
-                // TODO: HADI
-                // gpuIndex,
-                cpuTempIndex,
+                gpuIndex,
                 opt.numQuery,
                 opt.dim,
                 opt.k,
@@ -506,7 +501,7 @@ TEST(TestGpuIndexIVFFlat, AddNaN) {
             distance.data(),
             indices.data());
 }
-/*
+
 TEST(TestGpuIndexIVFFlat, UnifiedMemory) {
     // Construct on a random device to test multi-device, if we have
     // multiple devices
@@ -562,7 +557,8 @@ TEST(TestGpuIndexIVFFlat, UnifiedMemory) {
             0.1f,
             0.015f);
 }
-*/
+
+
 TEST(TestGpuIndexIVFFlat, LongIVFList) {
     int device = faiss::gpu::randVal(0, faiss::gpu::getNumDevices() - 1);
 

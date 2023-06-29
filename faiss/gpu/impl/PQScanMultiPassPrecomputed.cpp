@@ -690,7 +690,7 @@ void runPQScanMultiPassPrecomputed(
                 outDistances.narrowOutermost(query, numQueriesInTile);
         auto outIndicesView =
                 outIndices.narrowOutermost(query, numQueriesInTile);
-
+/*
         runMultiPassTile(
                 res,
                 queryView,
@@ -717,7 +717,7 @@ void runPQScanMultiPassPrecomputed(
                 outDistanceView,
                 outIndicesView,
                 streams[curStream]);
-
+*/
         curStream = (curStream + 1) % 2;
     }
 

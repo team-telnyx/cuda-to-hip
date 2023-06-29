@@ -578,6 +578,7 @@ inline bool isSpecializedPQCodeDistanceDims(int dims) {
         case 24:
         case 28:
         case 32:
+        case 64:
             return true;
         default:
             return false;
@@ -655,7 +656,7 @@ void runPQCodeDistances(
         } else {                                                         \
             auto outCodeDistancesT = outCodeDistances.toTensor<float>(); \
                                                                          \
-            hipLaunchKernelGGL(HIP_KERNEL_NAME(pqCodeDistances<float, CentroidT, DIMS, L2>), \
+            hipLaunchKernelGGL(HIP_KERNEL_NAME(pqCodeDistances<float, CentroidT, DIMS, L2>),  \
                             grid, block, smem, stream,                   \
                             queries,                                     \
                             kQueriesPerBlock,                            \
@@ -717,6 +718,9 @@ void runPQCodeDistances(
             break;
         case 32:
             CODE_L2(32);
+            break;
+        case 64:
+            CODE_L2(64);
             break;
         default:
             // This should not be reached, we should fall back to the MM

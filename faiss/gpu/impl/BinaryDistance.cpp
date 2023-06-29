@@ -202,7 +202,7 @@ void runBinaryDistanceAnySize(
     if (k == 1) {
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceAnySize<1, 1, BinaryType>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 32) {
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceAnySize<32, 2, BinaryType>), grid, block, 0, stream, vecs, query, outK, outV, k);
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceAnySize<64, 3, BinaryType>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 64) {
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceAnySize<64, 3, BinaryType>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 128) {
@@ -233,39 +233,23 @@ void runBinaryDistanceLimitSize(
     dim3 block(kLanes, kWarps);
 
     if (k == 1) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<1, 1, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 32) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<32, 2, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<64, 3, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 64) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<64, 3, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 128) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<128, 3, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 256) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<256, 4, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 512) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<512, 8, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     } else if (k <= 1024) {
-        // TODO: HADI
-        std::cout << "K = " << k << std::endl;
         hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<1024, 8, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
     }
 #if GPU_MAX_SELECTION_K >= 2048
     else if (k <= 2048) {
-        // TODO: HADI
-        std::cout << "K <= 2048 " << k << std::endl;
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<2048, 8, BinaryType, ReductionLimit>), grid, block, 0, stream, vecs, query, outK, outV, k);
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(binaryDistanceLimitSize<2048, 8, BinaryType, ReductionLimit>), dim3(grid), dim3(block), 0, stream, vecs, query, outK, outV, k);
     }
 #endif
 }
@@ -298,22 +282,16 @@ void runBinaryDistance(
 
         // Optimize for vectors with dimensions a multiple of 32 that are less
         // than 32 * kReductionLimit (256) dimensions in size
-        // TODO: HADI
-        std::cout << "runBinaryDistanceLimitedSize 32" << std::endl;
         runBinaryDistanceLimitSize<unsigned int, kReductionLimit32>(
                 vecs32, query32, outK, outV, k, stream);
 
     } else if (vecs.getSize(1) <= kReductionLimit8) {
         // Optimize for vectors with dimensions a multiple of 32 that are less
         // than 32 * kReductionLimit (256) dimensions in size
-        // TODO: HADI
-        std::cout << "runBinaryDistanceLimitedSize 8" << std::endl;
         runBinaryDistanceLimitSize<unsigned char, kReductionLimit8>(
                 vecs, query, outK, outV, k, stream);
     } else {
         // Arbitrary size kernel
-        // TODO: HADI
-        std::cout << "runBinaryDistanceAnySize" << std::endl;
         runBinaryDistanceAnySize<unsigned char>(
                 vecs, query, outK, outV, k, stream);
     }

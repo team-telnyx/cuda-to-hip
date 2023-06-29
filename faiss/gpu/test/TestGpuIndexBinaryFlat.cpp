@@ -72,23 +72,20 @@ void testGpuIndexBinaryFlat(int kOverride = -1) {
 
     // multiples of 8 and multiples of 32 use different implementations
     // TODO: HADI
-    // int dims = faiss::gpu::randVal(1, 20) * DimMultiple;
-    int dims = 1 * DimMultiple;
+    int dims = faiss::gpu::randVal(1, 20) * DimMultiple;
+    // int dims = 1 * DimMultiple;
     faiss::gpu::GpuIndexBinaryFlat gpuIndex(&res, dims, config);
 
     faiss::IndexBinaryFlat cpuIndex(dims);
     
     // TODO: HADI
-    // int k = kOverride > 0
-    //         ? kOverride
-    //         : faiss::gpu::randVal(1, faiss::gpu::getMaxKSelection());
-    int k = 1;
+    int k = kOverride > 0
+            ? kOverride
+            : faiss::gpu::randVal(1, faiss::gpu::getMaxKSelection());
+    // int k = 1;
 
-    // TODO: HADI
-    // int numVecs = faiss::gpu::randVal(k + 1, 20000);
-    // int numQuery = faiss::gpu::randVal(1, 1000);
-    int numVecs = 1;
-    int numQuery = 1;
+    int numVecs = faiss::gpu::randVal(k + 1, 20000);
+    int numQuery = faiss::gpu::randVal(1, 1000);
 
     auto data = faiss::gpu::randBinaryVecs(numVecs, dims);
     gpuIndex.add(numVecs, data.data());
@@ -108,18 +105,7 @@ void testGpuIndexBinaryFlat(int kOverride = -1) {
     gpuIndex.search(
             numQuery, query.data(), k, gpuDist.data(), gpuLabels.data());
 
-    // TODO: HADI
     compareBinaryDist(cpuDist, cpuLabels, gpuDist, gpuLabels, numQuery, k);
-    // std::vector<int> cpuDistTemp(numQuery * k);
-    // std::vector<faiss::idx_t> cpuLabelsTemp(numQuery * k);
-    // for(int i = 0; i < numQuery * k; i++){
-    //     cpuDistTemp.at(i) = gpuDist.at(i);
-    //     cpuLabelsTemp.at(i) = gpuLabels.at(i);
-
-    // }
-    // cpuDistTemp = std::move(gpuDist);
-    // cpuLabelsTemp = std::move(gpuLabels);
-    // compareBinaryDist(cpuDist, cpuLabels, cpuDistTemp, cpuLabelsTemp, numQuery, k);
 }
 
 TEST(TestGpuIndexBinaryFlat, Test8) {
@@ -127,7 +113,7 @@ TEST(TestGpuIndexBinaryFlat, Test8) {
         testGpuIndexBinaryFlat<8>();
     }
 }
-/*
+
 TEST(TestGpuIndexBinaryFlat, Test32) {
     for (int tries = 0; tries < 4; ++tries) {
         testGpuIndexBinaryFlat<32>();
@@ -150,8 +136,6 @@ TEST(TestGpuIndexBinaryFlat, LargeIndex) {
                      "to insufficient device memory\n";
         return;
     }
-
-    std::cerr << "Running LargeIndex test\n";
 
     faiss::gpu::GpuIndexBinaryFlatConfig config;
     config.device = device;
@@ -182,7 +166,7 @@ TEST(TestGpuIndexBinaryFlat, LargeIndex) {
 
     compareBinaryDist(cpuDist, cpuLabels, gpuDist, gpuLabels, nq, k);
 }
-*/
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
 

@@ -56,7 +56,7 @@ void runWarpSelect(
         if (k == 1) {
             WARP_SELECT_CALL(float, true, 1);
         } else if (k <= 32) {
-            WARP_SELECT_CALL(float, true, 32);
+            WARP_SELECT_CALL(float, true, 64);
         } else if (k <= 64) {
             WARP_SELECT_CALL(float, true, 64);
         } else if (k <= 128) {
@@ -76,7 +76,7 @@ void runWarpSelect(
         if (k == 1) {
             WARP_SELECT_CALL(float, false, 1);
         } else if (k <= 32) {
-            WARP_SELECT_CALL(float, false, 32);
+            WARP_SELECT_CALL(float, false, 64);
         } else if (k <= 64) {
             WARP_SELECT_CALL(float, false, 64);
         } else if (k <= 128) {

@@ -306,8 +306,6 @@ void StandardGpuResourcesImpl::initializeForDevice(int device) {
     int wavefrontSize = 0;
     hipDeviceGetAttribute(&wavefrontSize, hipDeviceAttributeWarpSize, device);
     FAISS_ASSERT_FMT(
-            // TODO: HADI
-            // prop.warpSize == 32,
             prop.warpSize == 64,
             "Device id %d does not have expected WarpSize of 32",
             device);

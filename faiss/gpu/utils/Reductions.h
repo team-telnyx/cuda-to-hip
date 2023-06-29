@@ -36,7 +36,7 @@ __device__ inline T warpReduceAllSum(T val) {
 /// Performs a block-wide reduction
 template <typename T, typename Op, bool BroadcastAll, bool KillWARDependency>
 __device__ inline T blockReduceAll(T val, Op op, T* smem) {
-    int laneId = getLaneId();
+    int laneId = hipThreadIdx_x % kWarpSize;
     int warpId = hipThreadIdx_x / kWarpSize;
 
     val = warpReduceAll<T, Op>(val, op);
@@ -79,7 +79,7 @@ template <
         bool BroadcastAll,
         bool KillWARDependency>
 __device__ inline void blockReduceAll(T val[Num], Op op, T* smem) {
-    int laneId = getLaneId();
+    int laneId = hipThreadIdx_x % kWarpSize;
     int warpId = hipThreadIdx_x / kWarpSize;
 
 #pragma unroll

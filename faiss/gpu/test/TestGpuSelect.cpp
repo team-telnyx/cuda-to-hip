@@ -127,8 +127,6 @@ void testForSize(int rows, int cols, int k, bool dir, bool warp) {
     }
 }
 
-/* TODO: HADI
-*/
 // General test
 TEST(TestGpuSelect, test) {
     for (int i = 0; i < 10; ++i) {

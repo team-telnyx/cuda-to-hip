@@ -46,7 +46,7 @@ __global__ void warpSelect(
         return;
     }
 
-    idx_t i = getLaneId();
+    idx_t i = hipThreadIdx_x % kWarpSize;
     K* inStart = in[row][i].data();
 
     // Whole warps must participate in the selection

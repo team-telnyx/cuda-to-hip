@@ -11,14 +11,11 @@
 #include <faiss/gpu/utils/DeviceTensor.h>
 #include <faiss/gpu/utils/Float16.h>
 #include "hip/hip_runtime.h"
-// #include <thrust/system/hip/execution_policy.h>
 #include <thrust/execution_policy.h>
 #include <thrust/transform.h>
 
 namespace faiss {
 namespace gpu {
-
-// half_float::half
 
 //
 // Conversion utilities
