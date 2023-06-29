@@ -84,11 +84,8 @@ void testGpuIndexBinaryFlat(int kOverride = -1) {
             : faiss::gpu::randVal(1, faiss::gpu::getMaxKSelection());
     // int k = 1;
 
-    // TODO: HADI
     int numVecs = faiss::gpu::randVal(k + 1, 20000);
     int numQuery = faiss::gpu::randVal(1, 1000);
-    // int numVecs = 1;
-    // int numQuery = 1;
 
     auto data = faiss::gpu::randBinaryVecs(numVecs, dims);
     gpuIndex.add(numVecs, data.data());
@@ -108,18 +105,7 @@ void testGpuIndexBinaryFlat(int kOverride = -1) {
     gpuIndex.search(
             numQuery, query.data(), k, gpuDist.data(), gpuLabels.data());
 
-    // TODO: HADI
     compareBinaryDist(cpuDist, cpuLabels, gpuDist, gpuLabels, numQuery, k);
-    std::vector<int> cpuDistTemp(numQuery * k);
-    std::vector<faiss::idx_t> cpuLabelsTemp(numQuery * k);
-    for(int i = 0; i < numQuery * k; i++){
-        cpuDistTemp.at(i) = gpuDist.at(i);
-        cpuLabelsTemp.at(i) = gpuLabels.at(i);
-
-    }
-    cpuDistTemp = std::move(gpuDist);
-    cpuLabelsTemp = std::move(gpuLabels);
-    compareBinaryDist(cpuDist, cpuLabels, cpuDistTemp, cpuLabelsTemp, numQuery, k);
 }
 
 TEST(TestGpuIndexBinaryFlat, Test8) {
@@ -150,8 +136,6 @@ TEST(TestGpuIndexBinaryFlat, LargeIndex) {
                      "to insufficient device memory\n";
         return;
     }
-
-    std::cerr << "Running LargeIndex test\n";
 
     faiss::gpu::GpuIndexBinaryFlatConfig config;
     config.device = device;

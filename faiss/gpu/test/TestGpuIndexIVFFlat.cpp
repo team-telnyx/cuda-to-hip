@@ -501,7 +501,7 @@ TEST(TestGpuIndexIVFFlat, AddNaN) {
             distance.data(),
             indices.data());
 }
-/*
+
 TEST(TestGpuIndexIVFFlat, UnifiedMemory) {
     // Construct on a random device to test multi-device, if we have
     // multiple devices
@@ -557,7 +557,8 @@ TEST(TestGpuIndexIVFFlat, UnifiedMemory) {
             0.1f,
             0.015f);
 }
-*/
+
+
 TEST(TestGpuIndexIVFFlat, LongIVFList) {
     int device = faiss::gpu::randVal(0, faiss::gpu::getNumDevices() - 1);
 

@@ -43,7 +43,7 @@
                                                                                \
         auto grid = dim3(in.getSize(0));                                       \
                                                                                \
-        constexpr int kBlockSelectNumThreads = (WARP_Q <= 1024) ? 128 : 64;    \
+        constexpr int kBlockSelectNumThreads = (WARP_Q <= 1024) ? 256 : 128;    \
         auto block = dim3(kBlockSelectNumThreads);                             \
                                                                                \
         FAISS_ASSERT(k <= WARP_Q);                                             \
@@ -75,7 +75,7 @@ hipLaunchKernelGGL(HIP_KERNEL_NAME(blockSelect<TYPE,                           \
                                                                                \
         auto grid = dim3(inK.getSize(0));                                      \
                                                                                \
-        constexpr int kBlockSelectNumThreads = (WARP_Q <= 1024) ? 128 : 64;    \
+        constexpr int kBlockSelectNumThreads = (WARP_Q <= 1024) ? 256 : 128;    \
         auto block = dim3(kBlockSelectNumThreads);                             \
                                                                                \
         FAISS_ASSERT(k <= WARP_Q);                                             \

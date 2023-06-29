@@ -657,7 +657,7 @@ void runPQCodeDistances(
             auto outCodeDistancesT = outCodeDistances.toTensor<float>(); \
                                                                          \
             hipLaunchKernelGGL(HIP_KERNEL_NAME(pqCodeDistances<float, CentroidT, DIMS, L2>),  \
-                            dim3(grid), dim3(block), smem, stream,                   \
+                            grid, block, smem, stream,                   \
                             queries,                                     \
                             kQueriesPerBlock,                            \
                             coarseCentroids,                             \
@@ -718,6 +718,9 @@ void runPQCodeDistances(
             break;
         case 32:
             CODE_L2(32);
+            break;
+        case 64:
+            CODE_L2(64);
             break;
         default:
             // This should not be reached, we should fall back to the MM

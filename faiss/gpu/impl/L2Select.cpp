@@ -202,7 +202,7 @@ void runL2SelectMin(
     FAISS_ASSERT(k <= GPU_MAX_SELECTION_K);
 
     if (k == 1) {
-        constexpr int kThreadsPerBlock = 256;
+        constexpr int kThreadsPerBlock = 512;
         constexpr int kRowsPerBlock = 8;
 
         auto block = dim3(kThreadsPerBlock);
@@ -242,7 +242,7 @@ void runL2SelectMin(
 
         // block size 128 for everything <= 1024
         if (k <= 32) {
-            RUN_L2_SELECT(128, 32, 2);
+            RUN_L2_SELECT(128, 64, 3);
         } else if (k <= 64) {
             RUN_L2_SELECT(128, 64, 3);
         } else if (k <= 128) {

@@ -56,7 +56,7 @@ void runBlockSelect(
         if (k == 1) {
             BLOCK_SELECT_CALL(float, true, 1);
         } else if (k <= 32) {
-            BLOCK_SELECT_CALL(float, true, 32);
+            BLOCK_SELECT_CALL(float, true, 64);
         } else if (k <= 64) {
             BLOCK_SELECT_CALL(float, true, 64);
         } else if (k <= 128) {
@@ -76,7 +76,7 @@ void runBlockSelect(
         if (k == 1) {
             BLOCK_SELECT_CALL(float, false, 1);
         } else if (k <= 32) {
-            BLOCK_SELECT_CALL(float, false, 32);
+            BLOCK_SELECT_CALL(float, false, 64);
         } else if (k <= 64) {
             BLOCK_SELECT_CALL(float, false, 64);
         } else if (k <= 128) {
@@ -109,7 +109,7 @@ void runBlockSelectPair(
         if (k == 1) {
             BLOCK_SELECT_PAIR_CALL(float, true, 1);
         } else if (k <= 32) {
-            BLOCK_SELECT_PAIR_CALL(float, true, 32);
+            BLOCK_SELECT_PAIR_CALL(float, true, 64);
         } else if (k <= 64) {
             BLOCK_SELECT_PAIR_CALL(float, true, 64);
         } else if (k <= 128) {
@@ -129,7 +129,7 @@ void runBlockSelectPair(
         if (k == 1) {
             BLOCK_SELECT_PAIR_CALL(float, false, 1);
         } else if (k <= 32) {
-            BLOCK_SELECT_PAIR_CALL(float, false, 32);
+            BLOCK_SELECT_PAIR_CALL(float, false, 64);
         } else if (k <= 64) {
             BLOCK_SELECT_PAIR_CALL(float, false, 64);
         } else if (k <= 128) {

@@ -251,7 +251,7 @@ struct BlockSelect {
         // Sort all of the per-thread queues
         warpSortAnyRegisters<K, V, NumThreadQ, !Dir, Comp>(threadK, threadV);
 
-        constexpr int kNumWarpQRegisters = NumWarpQ * 2/ kWarpSize;
+        constexpr int kNumWarpQRegisters = NumWarpQ / kWarpSize;
         K warpKRegisters[kNumWarpQRegisters];
         V warpVRegisters[kNumWarpQRegisters];
 
@@ -442,7 +442,7 @@ template <
         int NumThreadQ,
         int ThreadsPerBlock>
 struct WarpSelect {
-    static constexpr int kNumWarpQRegisters = NumWarpQ * 2 / kWarpSize;
+    static constexpr int kNumWarpQRegisters = NumWarpQ / kWarpSize;
 
     __device__ inline WarpSelect(K initKVal, V initVVal, int k)
             : initK(initKVal),
@@ -509,7 +509,7 @@ __device__ inline void checkThreadQ() {
     }
 
     // We have to beat at least this element
-    warpKTop = __shfl(warpK[kNumWarpQRegisters - 1], kLane, kWarpSize);
+    warpKTop = __shfl(warpK[kNumWarpQRegisters - 1], kLane);
 }
 
     /// This function handles sorting and merging together the

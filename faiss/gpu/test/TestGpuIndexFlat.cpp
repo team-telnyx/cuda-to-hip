@@ -387,6 +387,7 @@ TEST(TestGpuIndexFlat, UnifiedMemory) {
             0.1f,
             0.015f);
 }
+
 TEST(TestGpuIndexFlat, LargeIndex) {
     // Construct on a random device to test multi-device, if we have
     // multiple devices
@@ -403,8 +404,6 @@ TEST(TestGpuIndexFlat, LargeIndex) {
                      "to insufficient device memory\n";
         return;
     }
-
-    std::cout << "Running LargeIndex test\n";
 
     size_t dim = 256; // each vec is sizeof(float) * 256 = 1 KiB in size
     size_t nb = 5000000;
